@@ -29,6 +29,7 @@ In addition to this (very) simplified functional workflow, this facility must en
   
 ## Technical specifications
 ### Producer : URL check
+#### Synopsis
 _Producer_ is in charge of : 
 - fetching remote target URL
 - do the math about request chronology
@@ -36,12 +37,56 @@ _Producer_ is in charge of :
 - forward formatted metric string to Kafka topic
 ![Producer functional](assets/aiven_url_check_producer_functional.png)
 
+#### Configuration items
+The URL checker process accepts following **editable** configuration items :
+- *CHECK_TARGET_URL* : the URL to check, may be on *http* or *https* proto
+- *CHECK_PERIOD_SECONDS* : the time between each check, in seconds
+- *CHECK_CONTENTS_REGEX* (optional) : the regular expression to lookup text with, in body contents
+
+In addition, some internal configuration items are needed :
+- kafka topic to send metrics to
+- kafka topic used for DLQ
+- kafka credentials
+
 ### Consumer : metrics record storage
+#### Synopsis
 _Consumer_ is in charge of :
-- checking metrics string 
+- subscription to kafka topic
+- checking incoming metrics string 
 - store this record in Postgres database via one of available workers
 ![Consumer functional](assets/aiven_url_check_consumer_functional.png)
+
+#### Configuration items
+The metrics storage process accepts following **editable** configuration items :
+- *WORKERS_COUNT* : the maximum allowed numbers of workers
+
+In addition,  some internal configuration items are needed :
+- kafka topic to consume
+- kafka topic used for DLQ
+- kafka credentials
+- Postgres DSN
+
+### Kafka topics
+#### Metrics topic
+This topic is named `url-check.metrics`
+Is used for high throughput of metrics data messages between processes. 
+#### DLQ topic
+This topic is named `url-check.DLQ`
+Is used for error handling : any runtime error would send a useful message in. 
+
+### Postgres metrics data structure
+Metrics data strings are stored in Postgres DB, using a single (partitioned) table :
+```sql
+CREATE TABLE check_url_metrics (
+    url               int not null,
+    logdate           date not null,
+    statuscode        int not null,
+    resptimems        int not null,
+    regexfound        int
+) PARTITION BY RANGE (url,logdate);
+```
 ## How to
 
 ## Yet to be done
-- 
+- bind DLQ kafka topic to some email warn process or the like
+- split postrges data into multiple tables, make better table partitions
