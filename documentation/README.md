@@ -28,19 +28,19 @@ In addition to this (very) simplified functional workflow, this facility must en
 - configurability
   
 ## Technical specifications
-### Consumer
-Consumer is in charge of : 
+### Producer : URL check
+_Producer_ is in charge of : 
 - fetching remote target URL
 - do the math about request chronology
 - eventual string lookup in contents
 - forward formatted metric string to Kafka topic
-![Consumer functional](assets/aiven_url_check_consumer_functional.png)
+![Producer functional](assets/aiven_url_check_producer_functional.png)
 
-### Producer
-Producer is in charge of :
+### Consumer : metrics record storage
+_Consumer_ is in charge of :
 - checking metrics string 
-- store this record in Postgres database
-![Consumer functional](assets/aiven_url_check_producer_functional.png)
+- store this record in Postgres database via one of available workers
+![Consumer functional](assets/aiven_url_check_consumer_functional.png)
 ## How to
 
 ## Yet to be done
