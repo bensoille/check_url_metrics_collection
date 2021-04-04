@@ -23,7 +23,7 @@ Simplified functional process can be represented with following schema :
 
 In addition to this (very) simplified functional workflow, this facility must enable :
 - multiple producers : **multiple URL checkers** can be launched, both sending metrics to same data bus
-- single consumer : **single DB storage process** is launched, which makes use **multiple workers**
+- single or multiple consumers : each consumer uses **multiple workers** for throughput configuration
 - high throughput, thanks to DB insertion process threading
 - configurability
   
@@ -32,7 +32,7 @@ In addition to this (very) simplified functional workflow, this facility must en
 #### Synopsis
 _Producer_ is in charge of : 
 - fetching remote target URL
-- do the math about request chronology
+- do the math on request chronology
 - eventual string lookup in contents
 - forward formatted metric string to Kafka topic
 ![Producer functional](assets/aiven_url_check_producer_functional.png)
@@ -78,15 +78,27 @@ Is used for error handling : any runtime error would send a useful message in.
 Metrics data strings are stored in Postgres DB, using a single (partitioned) table :
 ```sql
 CREATE TABLE check_url_metrics (
-    url               int not null,
+    url               text not null,
+    targetip          inet not null,
+    sourceip          inet not null,
     logdate           date not null,
     statuscode        int not null,
-    resptimems        int not null,
-    regexfound        int
-) PARTITION BY RANGE (url,logdate);
+    resptimems        float not null,
+    regexfound        boolean
+);
 ```
+With :
+- url : the target URL to check
+- targetip : the target reached IP address
+- sourceip : the originating IP address 
+- logdate : the date the test was launched
+- statuscode : the returned HTTP status code
+- resptimems : the measured request time, in milli seconds
+- regexfound : true if text was found in response body, false otherwise, NULL if not configured in url fetcher (producer)
 ## How to
 
 ## Yet to be done
 - bind DLQ kafka topic to some email warn process or the like
-- split postrges data into multiple tables, make better table partitions
+- split postrges data into multiple tables, make table partitions
+- implement some retry feature so that failed messages are retried a couple of times before DLQ
+- implement some "consumer : more workers needed" alerting so that additional consumers can be launched
