@@ -11,8 +11,12 @@ This facility will leverage following services :
 - Kafka for realtime messages distribution
 - Postgres for collected metrics storage
 
+## Required features
+This facility is providing with production-ready features set :
+-  
 ## Functional specifications
-
+Simplified functional process can be represented with following schema :
+![Simplified functional](assets/aiven_url_check_functional.png)
 ## Technical specifications
 
 ## How to
