@@ -1,0 +1,7 @@
+# created by virtualenv automatically
+/bin
+/lib
+.git/
+.vscode/
+**/.pytest_cache
+**/__pycache__
