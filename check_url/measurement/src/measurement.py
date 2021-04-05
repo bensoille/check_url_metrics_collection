@@ -63,6 +63,10 @@ class Measurement:
 
 
   def start_periodic_requests(self):
+    """
+    Starts periodic requests loop, using config values from env variables.
+    See method stop_periodic_requests for loop stop
+    """
     self.ticker = threading.Event()
     while not self.ticker.wait(self.period):
       metrics = instance.get_url_response_time()
@@ -70,6 +74,9 @@ class Measurement:
 
 
   def stop_periodic_requests(self):
+    """
+    Stops periodic requests loop, previously started with start_periodic_requests
+    """    
     self.ticker.clear()
 
 
@@ -86,7 +93,7 @@ if(__name__) == '__main__':
   if not "CHECK_TARGET_URL" in os.environ or not "CHECK_PERIOD_SECONDS" in os.environ :
     print("Some env vars are missing")
     exit(1)
-    
+
   # Catch system calls and allow clean shutdown
   signal.signal(signal.SIGTERM, signal_handler)
   signal.signal(signal.SIGINT, signal_handler)
@@ -97,9 +104,11 @@ if(__name__) == '__main__':
       int(os.environ['CHECK_PERIOD_SECONDS'])
     )
     instance.start_periodic_requests()
+
   except ProgramKilled:
+    # Caught system interrupt, stop loop
     print("Killing, please wait for clean shutdown")
     instance.stop_periodic_requests()
-    # Wait a couple of seconds
+    # Wait a couple of seconds and exit with success return code
     time.sleep(2)
     exit(0)
