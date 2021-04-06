@@ -1,5 +1,5 @@
 import os, json, re
-import time, threading, signal
+import time, datetime, threading, signal
 from urllib.parse import urlparse
 
 import requests 
@@ -60,7 +60,7 @@ class Measurement:
         ssl_keyfile='service.key'
       ) 
     except:
-      self.send_error_to_DLQ({'step':'measurement.__init__', 'error':'Could not instanciate Measurement helper kafka producer'})
+      self.send_error_to_DLQ({'step':'measurement.setup_producer', 'error':'Could not instanciate Measurement helper kafka producer'})
       return None
 
     return self.producer
@@ -86,6 +86,7 @@ class Measurement:
       #--------------------------------------------------
       # Response received tick
       inter = time.time_ns()
+      print(r.headers)
 
       # Store http request details
       if(r is not None):
@@ -106,12 +107,16 @@ class Measurement:
     metricsDict['receivedtext'] = receivedtext
     metricsDict['targetip']     = targetip
     metricsDict['sourceip']     = originip
-    metricsDict['logdate']      = r.headers['Date']
+    # Format request date to ISO
+    metricsDict['logdate']      = datetime.datetime.strptime(r.headers['Date'], "%a, %d %b %Y %H:%M:%S %Z").isoformat()
+    metricsDict['logtime']      = datetime.datetime.strptime(r.headers['Date'], "%a, %d %b %Y %H:%M:%S %Z").strftime("%H:%M:%S")
     # Ticks were in ns : convert to ms
     metricsDict['resptimems']   = (inter - begin) / 1000000 
     # Lookup text only if regex was given at instanciation time
     if(self.regexp is not None):
       metricsDict['regexfound'] = self.found_text_in_body(receivedtext)
+    else:
+      metricsDict['regexfound'] = 'N/A'
 
     return metricsDict
 

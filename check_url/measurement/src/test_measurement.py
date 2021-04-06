@@ -33,6 +33,7 @@ class TestMeasurement(unittest.TestCase):
     # Mock correct response
     classinst = Measurement("http://example.com", 5)
     mock_requests.return_value.status_code = 200
+    mock_requests.return_value.headers = {'Date': 'Wed, 31 Mar 2021 08:47:43 GMT'}
     mock_requests.return_value.text = "Mocked request response"
     
     ret = classinst.get_url_response_time()
@@ -53,6 +54,7 @@ class TestMeasurement(unittest.TestCase):
     # Mock correct response
     classinst = Measurement("http://example.com", 5)
     mock_requests.return_value.status_code = 503
+    mock_requests.return_value.headers = {'Date': 'Wed, 31 Mar 2021 08:47:43 GMT'}
     mock_requests.return_value.text = "Mocked request response gateway timeout"
     
     ret = classinst.get_url_response_time()

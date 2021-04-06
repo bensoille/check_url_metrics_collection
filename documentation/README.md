@@ -77,15 +77,33 @@ Is used for error handling : any runtime error would send a useful message in.
 ### Postgres metrics data structure
 Metrics data strings are stored in Postgres DB, using a single (partitioned) table :
 ```sql
-CREATE TABLE check_url_metrics (
-    url               text not null,
-    targetip          inet not null,
-    sourceip          inet not null,
-    logdate           date not null,
-    statuscode        int not null,
-    resptimems        float not null,
-    regexfound        boolean
-);
+-- Extension: timescaledb
+
+-- DROP EXTENSION timescaledb;
+
+CREATE EXTENSION timescaledb
+    SCHEMA public
+    VERSION "2.1.0";
+
+-- Table: public.check_url_metrics
+
+-- DROP TABLE public.check_url_metrics;
+
+CREATE TABLE public.check_url_metrics
+(
+    url text COLLATE pg_catalog."default" NOT NULL,
+    logdate date NOT NULL,
+    targetip inet NOT NULL,
+    sourceip inet NOT NULL,
+    statuscode integer NOT NULL,
+    resptimems double precision NOT NULL,
+    regexfound boolean
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.check_url_metrics
+    OWNER to pguser;
 ```
 With :
 - url : the target URL to check
@@ -96,9 +114,4 @@ With :
 - resptimems : the measured request time, in milli seconds
 - regexfound : true if text was found in response body, false otherwise, NULL if not configured in url fetcher (producer)
 ## How to
-
-## Yet to be done
-- bind DLQ kafka topic to some email warn process or the like
-- split postrges data into multiple tables, make table partitions
-- implement some retry feature so that failed messages are retried a couple of times before DLQ
-- implement some "consumer : more workers needed" alerting so that additional consumers can be launched
+See [this readme page](../README.md)
