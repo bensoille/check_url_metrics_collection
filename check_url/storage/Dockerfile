@@ -1,16 +1,16 @@
 FROM python:3.8
 
 # set the working directory in the container
-WORKDIR /measure
+WORKDIR /storemetrics
 
 # copy the dependencies file to the working directory
-COPY  measurement/requirements.txt .
+COPY  storage/requirements.txt .
 
 # install dependencies
 RUN pip install -r requirements.txt
 
 # copy the content of the local src directory to the working directory
-COPY measurement/src/measurement.py .
+COPY storage/src/storage.py .
 
 # Copy Kafka creds and certs
 ARG KAFKA_CA=certs/ca.pem
@@ -22,4 +22,4 @@ COPY $KAFKA_KEY .
 COPY $KAFKA_CERT .
 
 # command to run on container start
-CMD [ "python", "measurement.py" ]
+CMD [ "python", "storage.py" ]
