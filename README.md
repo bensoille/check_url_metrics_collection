@@ -22,7 +22,7 @@ Finally, process can be configured with :
 - URL checker : target URL and check period
 - Metrics storage : number of workers to launch
 ## Prepare postgresql
-This step would be automatic soon, it's needed and not use *admin* user from scripts...
+> postgresql preparation step would be fully automatic soon, it's important that this facility does not use *admin* user...
 ### Create user
 Create a user that has non-admin role, via *aiven* GUI or with *admin user*. This username will be passed as an argument on *docker run* time.    
 > In instructions below we assume that this new username is *pguser*
@@ -63,6 +63,12 @@ ALTER TABLE public.check_url_metrics
 > From now on, *admin* user is NOT used anymore
 ## Build instructions
 > Following commands should be issued when _PWD_ in _check\_url_ folder of sources
+
+### Create Kafka topics
+> This step would be fully automatic soon
+Before it's implemented, so far topics must be created in Kafka via *aiven* GUI :
+- `url-check.metrics`
+- `url-check.DLQ`
 
 ### Prepare Kafka credentials
 > The Kafka certs files must be copied to the Dockerfile context.
@@ -131,3 +137,4 @@ With :
 - split postrges data into multiple tables, make table partitions, fine tune *timescaledb*
 - implement some retry feature so that failed messages are retried a couple of times before DLQ
 - implement some "consumer : more workers needed" alerting so that additional consumers can be launched
+- provide with *makefiles* for easier setup
