@@ -89,13 +89,13 @@ You'd end up with following files structure :
 │   │   └── service.key
 
 ```
-### URL checker / producer
+### Build URL checker / producer
 Build docker image (this step needs Kafka creds files as explained above) :
 ```bash
 docker -D build -f measurement/Dockerfile -t ben_aiven/test_url_measurement .
 ```
 
-### Metrics storage / consumer
+### Build Metrics storage / consumer
 Build docker image (this step needs Kafka creds files as explained above) :
 ```bash
 docker -D build -f storage/Dockerfile -t ben_aiven/test_url_storage .
