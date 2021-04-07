@@ -125,14 +125,13 @@ With :
 ### URL checker / producer
 Run docker container with following command :
 ```bash
-docker run -e WORKERS_COUNT=3 \
+docker run \
   -e CHECK_KAFKA_SERVERS='kafka-example.aivencloud.com:16031' \
   -e CHECK_PERIOD_SECONDS=60 \
   -e CHECK_TARGET_URL='http://soille.fr/hop.html' \
   -it ben_aiven/test_url_measurement
 ```
 With :
-- WORKERS_COUNT :         the number of consumer workers to start
 - CHECK_KAFKA_SERVERS :   the Kafka service URI, with appended port
 - CHECK_PERIOD_SECONDS :  time between checks, in seconds
 - CHECK_TARGET_URL :      the URL to check after
