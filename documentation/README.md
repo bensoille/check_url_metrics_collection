@@ -93,6 +93,7 @@ CREATE TABLE public.check_url_metrics
 (
     url text COLLATE pg_catalog."default" NOT NULL,
     logdate date NOT NULL,
+    logtime time without time zone,
     targetip inet NOT NULL,
     sourceip inet NOT NULL,
     statuscode integer NOT NULL,
@@ -109,7 +110,7 @@ With :
 - url : the target URL to check
 - targetip : the target reached IP address
 - sourceip : the originating IP address 
-- logdate : the date the test was launched
+- logdate/logtime : the date and time the test was launched
 - statuscode : the returned HTTP status code
 - resptimems : the measured request time, in milli seconds
 - regexfound : true if text was found in response body, false otherwise, NULL if not configured in url fetcher (producer)
