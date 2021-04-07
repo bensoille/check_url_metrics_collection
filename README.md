@@ -139,6 +139,7 @@ With :
 
 # Yet to be done
 - **Handle consumer sigterm correctly...**
+- provide with automated bootstrap (create user, table in pg and topics in kafka)
 - use logging instead of `print()`
 - bind DLQ kafka topic to some email warn process or the like
 - split postrges data into multiple tables, make table partitions, fine tune *timescaledb*
