@@ -25,7 +25,7 @@ class TestStorage(unittest.TestCase):
     )
 
 
-  # Instanciation should return None if KafkaConsumer is error
+  # Instanciation should return None if KafkaProducer is error
   @patch('kafka.KafkaProducer', side_effect=Exception("Test error"))
   def test_setup_producer_ko(self, mock_kafka_consumer):
 
@@ -38,7 +38,7 @@ class TestStorage(unittest.TestCase):
       'Should return None if producer is ko'
     )    
 
-  # Instanciation should return None if KafkaConsumer is error
+  # Instanciation should return None if db connect is error
   @patch('psycopg2.connect', side_effect=Exception("Test error"))
   def test_setup_database_connection_ko(self, mock_kafka_consumer):
 
