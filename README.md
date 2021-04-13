@@ -125,20 +125,20 @@ With :
 ### URL checker / producer
 Run docker container with following command :
 ```bash
-docker run -e WORKERS_COUNT=3 \
+docker run \
   -e CHECK_KAFKA_SERVERS='kafka-example.aivencloud.com:16031' \
   -e CHECK_PERIOD_SECONDS=60 \
   -e CHECK_TARGET_URL='http://soille.fr/hop.html' \
   -it ben_aiven/test_url_measurement
 ```
 With :
-- WORKERS_COUNT :         the number of consumer workers to start
 - CHECK_KAFKA_SERVERS :   the Kafka service URI, with appended port
 - CHECK_PERIOD_SECONDS :  time between checks, in seconds
 - CHECK_TARGET_URL :      the URL to check after
 
 # Yet to be done
 - **Handle consumer sigterm correctly...**
+- provide with automated bootstrap (create user, table in pg and topics in kafka)
 - use logging instead of `print()`
 - bind DLQ kafka topic to some email warn process or the like
 - split postrges data into multiple tables, make table partitions, fine tune *timescaledb*

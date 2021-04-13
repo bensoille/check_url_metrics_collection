@@ -12,13 +12,12 @@ class TestStorage(unittest.TestCase):
 
 
   # Instanciation should return None if KafkaConsumer is error
-  @patch('kafka.KafkaConsumer', side_effect=Exception("Test error"))
+  @patch('kafka.KafkaConsumer.__init__', side_effect=Exception("Test error"))
   def test_setup_consumer_ko(self, mock_kafka_consumer):
 
     classinst = Storage()
     prodRes = classinst.setup_consumer('kafkaservers')
 
-    print(prodRes)
     self.assertIsNone(
       prodRes,
       'Should return None if consumer is ko'
@@ -26,13 +25,12 @@ class TestStorage(unittest.TestCase):
 
 
   # Instanciation should return None if KafkaProducer is error
-  @patch('kafka.KafkaProducer', side_effect=Exception("Test error"))
+  @patch('kafka.KafkaProducer.__init__', side_effect=Exception("Test error"))
   def test_setup_producer_ko(self, mock_kafka_consumer):
 
     classinst = Storage()
     prodRes = classinst.setup_producer('kafkaservers')
 
-    print(prodRes)
     self.assertIsNone(
       prodRes,
       'Should return None if producer is ko'
@@ -45,7 +43,6 @@ class TestStorage(unittest.TestCase):
     classinst = Storage()
     prodRes = classinst.setup_database_connection('user', 'pass', 'host', 'port')
 
-    print(prodRes)
     self.assertIsNone(
       prodRes,
       'Should return None if connection to postgres db is ko'
