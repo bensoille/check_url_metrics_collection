@@ -1,4 +1,4 @@
-FROM python:3.10.0b3
+FROM python:3.10.10
 
 # set the working directory in the container
 WORKDIR /storemetrics
