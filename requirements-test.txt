@@ -1,6 +1,6 @@
-Requests==2.25.1
+Requests==2.31.0
 pytest==6.2.3
 mock==4.0.3
-Requests==2.25.1
+Requests==2.31.0
 kafka-python==2.0.2
 psycopg2-binary==2.8.6
